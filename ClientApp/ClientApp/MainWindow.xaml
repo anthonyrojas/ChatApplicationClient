@@ -5,8 +5,17 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ClientApp"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
-    <Grid>
-        
+        Title="KryptoChat" Height="720" Width="1024" ResizeMode="NoResize">
+    <Grid Width="{Binding ActualWidth, 
+              RelativeSource = {RelativeSource AncestorType = {x:Type Window}}}" 
+      Height="{Binding ActualHeight, 
+              RelativeSource ={RelativeSource AncestorType = {x:Type Window}}}">
+        <Grid.Background>
+            <LinearGradientBrush StartPoint="1,0" EndPoint="1,1">
+                <GradientStop Color="RoyalBlue" Offset="0"></GradientStop>
+                <GradientStop Color="Teal" Offset="0.8"></GradientStop>
+            </LinearGradientBrush>
+        </Grid.Background>
+        <Image Source="Media/lock.png" Width="250" VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="Uniform"></Image>
     </Grid>
 </Window>

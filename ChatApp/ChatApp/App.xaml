@@ -1,0 +1,10 @@
+﻿<Application
+    x:Class="ChatApp.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:ChatApp"
+    RequestedTheme="Dark">
+    <Application.Resources>
+        <vm:ViewModelLocator x:Key="Locator" xmlns:vm="using:ChatApp.ViewModel"/>
+    </Application.Resources>
+</Application>
