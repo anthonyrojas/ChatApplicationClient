@@ -42,6 +42,7 @@ namespace ChatApp.ViewModel
             ////}
 
             SimpleIoc.Default.Register<MainViewModel>();
+            SimpleIoc.Default.Register<RegisterViewModel>();
         }
 
         public MainViewModel Main
@@ -49,6 +50,14 @@ namespace ChatApp.ViewModel
             get
             {
                 return ServiceLocator.Current.GetInstance<MainViewModel>();
+            }
+        }
+
+        public RegisterViewModel Register
+        {
+            get
+            {
+                return ServiceLocator.Current.GetInstance<RegisterViewModel>();
             }
         }
 

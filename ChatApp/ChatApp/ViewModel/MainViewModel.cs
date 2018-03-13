@@ -11,6 +11,8 @@ using GalaSoft.MvvmLight.Messaging;
 using GalaSoft.MvvmLight.Threading;
 using ChatApp.Model;
 using System.Windows.Input;
+using Windows.UI.Popups;
+using Windows.UI.Xaml.Controls;
 
 namespace ChatApp.ViewModel
 {
@@ -18,9 +20,17 @@ namespace ChatApp.ViewModel
     {
         private String phone;
         private String password;
-        private ICommand _loginCommand { get; set; }
+        public ICommand LoginCommand { get; set; }
+        public ICommand ShowRegisterCommand { get; set; }
         public MainViewModel()
         {
+            LoginCommand = new RelayCommand(LoginCommandAction);
+            ShowRegisterCommand = new RelayCommand<Page>((page)=>ShowRegisterAction(page));
+        }
+
+        private void ShowRegisterAction(Page p)
+        {
+            p.Frame.Navigate(typeof(Register), null);
         }
 
         public String Phone
@@ -30,11 +40,52 @@ namespace ChatApp.ViewModel
             {
                 phone = value;
                 RaisePropertyChanged("Phone");
-                Console.WriteLine("Hello");
             }
         }
-        public String Password { get; set; }
+        public String Password
+        {
+            get { return password; }
+            set
+            {
+                password = value;
+                RaisePropertyChanged("Password");
+            }
+        }
 
-        public ICommand LoginCommand { get; set; }
+        private async void LoginCommandAction()
+        {
+            if (String.IsNullOrEmpty(phone) && String.IsNullOrEmpty(password))
+            {
+                MessageDialog showDialog = new MessageDialog("Password and phone fields cannot be left blank. You must enter a phone and password.", "Error");
+                showDialog.Commands.Add(new UICommand("Ok") { Id = 0 });
+                showDialog.CancelCommandIndex = 0;
+                await showDialog.ShowAsync();
+            }
+            else if (phone == null || String.IsNullOrEmpty(phone) || String.IsNullOrWhiteSpace(phone))
+            {
+                MessageDialog showDialog = new MessageDialog("You must enter a phone number.", "Error");
+                showDialog.Commands.Add(new UICommand("Ok") { Id = 0 });
+                showDialog.CancelCommandIndex = 0;
+                await showDialog.ShowAsync();
+            }
+            else if (password == null || String.IsNullOrEmpty(password) || String.IsNullOrWhiteSpace(password))
+            {
+                MessageDialog showDialog = new MessageDialog("You must enter a password.", "Error");
+                showDialog.Commands.Add(new UICommand("Ok") { Id = 0 });
+                showDialog.CancelCommandIndex = 0;
+                await showDialog.ShowAsync();
+            }
+            else
+            {
+                MessageDialog showDialog = new MessageDialog($"Your number is: {phone}\nYour password is: {password}", "Success");
+                showDialog.Commands.Add(new UICommand("Ok") { Id = 0 });
+                showDialog.CancelCommandIndex = 0;
+                await showDialog.ShowAsync();
+                phone = null;
+                password = null;
+                RaisePropertyChanged("Phone");
+                RaisePropertyChanged("Password");
+            }
+        }
     }
 }

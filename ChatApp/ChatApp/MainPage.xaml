@@ -1,5 +1,6 @@
 ﻿<Page
     x:Class="ChatApp.MainPage"
+    x:Name="root"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:ChatApp"
@@ -28,9 +29,9 @@
             <ColumnDefinition Width="3*"/>
         </Grid.ColumnDefinitions>
         <Image Grid.Column="1" Grid.Row="1" Source="Media/lock.png"/>
-        <TextBox PlaceholderText="Phone" Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Background="White" Text="{Binding Phone, Mode=TwoWay}"></TextBox>
-        <PasswordBox PlaceholderText="Password" Grid.Row="3" Grid.Column="1" VerticalAlignment="Top" Background="White" Password="{Binding Password, Mode=TwoWay}"></PasswordBox>
-        <Button Grid.Row="4" Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Center" Foreground="White">
+        <TextBox PlaceholderText="Phone" Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Background="White" Foreground="Black" Text="{Binding Phone, Mode=TwoWay}"></TextBox>
+        <PasswordBox PlaceholderText="Password" Grid.Row="3" Grid.Column="1" VerticalAlignment="Top" Background="White" Foreground="Black" Password="{Binding Password, Mode=TwoWay}"></PasswordBox>
+        <Button Command="{Binding LoginCommand}" Grid.Row="4" Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Left" Foreground="White">
             <Button.Background>
                 <LinearGradientBrush StartPoint="1,0" EndPoint="1,1">
                     <GradientStop Color="DarkGreen" Offset="0"></GradientStop>
