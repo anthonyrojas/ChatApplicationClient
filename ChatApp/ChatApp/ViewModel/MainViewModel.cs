@@ -22,15 +22,17 @@ namespace ChatApp.ViewModel
         private String password;
         public ICommand LoginCommand { get; set; }
         public ICommand ShowRegisterCommand { get; set; }
-        public MainViewModel()
+        private readonly INavigationService navigationService;
+        public MainViewModel(INavigationService navService)
         {
+            navigationService = navService;
             LoginCommand = new RelayCommand(LoginCommandAction);
-            ShowRegisterCommand = new RelayCommand<Page>((page)=>ShowRegisterAction(page));
+            ShowRegisterCommand = new RelayCommand(ShowRegisterAction);
         }
 
-        private void ShowRegisterAction(Page p)
+        private void ShowRegisterAction()
         {
-            p.Frame.Navigate(typeof(Register), null);
+            navigationService.NavigateTo("Register");
         }
 
         public String Phone

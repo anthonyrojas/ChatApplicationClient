@@ -14,6 +14,8 @@
 
 using CommonServiceLocator;
 using GalaSoft.MvvmLight.Ioc;
+using GalaSoft.MvvmLight.Views;
+using ChatApp.Views;
 
 namespace ChatApp.ViewModel
 {
@@ -23,6 +25,8 @@ namespace ChatApp.ViewModel
     /// </summary>
     public class ViewModelLocator
     {
+        public const string MainPageKey = "Main";
+        public const string RegisterPageKey = "Register";
         /// <summary>
         /// Initializes a new instance of the ViewModelLocator class.
         /// </summary>
@@ -40,6 +44,10 @@ namespace ChatApp.ViewModel
             ////    // Create run time view services and models
             ////    SimpleIoc.Default.Register<IDataService, DataService>();
             ////}
+            var nav = new NavigationService();
+            nav.Configure(MainPageKey, typeof(MainPage));
+            nav.Configure(RegisterPageKey, typeof(RegisterPage));
+            SimpleIoc.Default.Register<INavigationService>(() => nav);
 
             SimpleIoc.Default.Register<MainViewModel>();
             SimpleIoc.Default.Register<RegisterViewModel>();

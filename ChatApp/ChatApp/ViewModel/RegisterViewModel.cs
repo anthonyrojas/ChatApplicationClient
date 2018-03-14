@@ -20,8 +20,8 @@ namespace ChatApp.ViewModel
         private String lastName;
         private String password;
         private String confirmPassword;
-        private String confirmPasswordBorderColor;
-        private int confirmPasswordBorderThickness;
+        private String confirmPasswordMessage;
+        private String confirmPasswordMessageColor;
         public ICommand RegisterCommand { get; set; }
         public RegisterViewModel()
         {
@@ -75,6 +75,20 @@ namespace ChatApp.ViewModel
             {
                 password = value;
                 RaisePropertyChanged("Password");
+                if (!String.IsNullOrEmpty(confirmPassword) && password != confirmPassword)
+                {
+                    confirmPasswordMessage = "Passwords do not match!";
+                    confirmPasswordMessageColor = "DarkRed";
+                    RaisePropertyChanged("ConfirmPasswordMessage");
+                    RaisePropertyChanged("ConfirmPasswordMessageColor");
+                }
+                else
+                {
+                    confirmPasswordMessage = null;
+                    confirmPasswordMessageColor = null;
+                    RaisePropertyChanged("ConfirmPasswordMessage");
+                    RaisePropertyChanged("ConfirmPasswordMessageColor");
+                }
             }
         }
 
@@ -84,34 +98,41 @@ namespace ChatApp.ViewModel
             set
             {
                 confirmPassword = value;
-                if (!String.IsNullOrEmpty(password) && !String.IsNullOrEmpty(confirmPassword) && confirmPassword != password)
-                {
-                    confirmPasswordBorderColor = "Red";
-                    confirmPasswordBorderThickness = 5;
-                    RaisePropertyChanged("ConfirmPasswordBorderColor");
-                    RaisePropertyChanged("ConfirmPasswordBorderThickness");
-                }
                 RaisePropertyChanged("ConfirmPassword");
+                if (!String.IsNullOrEmpty(confirmPassword) && !String.IsNullOrEmpty(password) && confirmPassword != password)
+                {
+                    confirmPasswordMessage = "Passwords do not match!";
+                    confirmPasswordMessageColor = "DarkRed";
+                    RaisePropertyChanged("ConfirmPasswordMessage");
+                    RaisePropertyChanged("ConfirmPasswordMessageColor");
+                }
+                else
+                {
+                    confirmPasswordMessage = null;
+                    confirmPasswordMessageColor = null;
+                    RaisePropertyChanged("ConfirmPasswordMessage");
+                    RaisePropertyChanged("ConfirmPasswordMessageColor");
+                }
             }
         }
 
-        public String ConfirmPasswordBorderColor
+        public String ConfirmPasswordMessage
         {
-            get { return confirmPasswordBorderColor; }
+            get { return confirmPasswordMessage; }
             set
             {
-                confirmPasswordBorderColor = value;
-                RaisePropertyChanged("ConfirmPasswordBorderColor");
+                confirmPasswordMessage = value;
+                RaisePropertyChanged("ConfirmPasswordMessage");
             }
         }
 
-        public int ConfirmPasswordBorderThickness
+        public String ConfirmPasswordMessageColor
         {
-            get { return confirmPasswordBorderThickness; }
+            get { return confirmPasswordMessageColor; }
             set
             {
-                confirmPasswordBorderThickness = value;
-                RaisePropertyChanged("ConfirmPasswordBorderThickness");
+                confirmPasswordMessageColor = value;
+                RaisePropertyChanged("ConfirmPasswordMessageColor");
             }
         }
 
@@ -120,31 +141,31 @@ namespace ChatApp.ViewModel
             String errorMessage = "";
             if (String.IsNullOrEmpty(phone))
             {
-                errorMessage += "You must enter a valid phone number. ";
+                errorMessage += "You must enter a valid phone number.\n";
             }
             if (String.IsNullOrEmpty(firstName))
             {
-                errorMessage += "You must enter a first name. ";
+                errorMessage += "You must enter a first name.\n";
             }
             if (String.IsNullOrEmpty(lastName))
             {
-                errorMessage += "You must enter a last name. ";
+                errorMessage += "You must enter a last name.\n";
             }
             if (String.IsNullOrEmpty(email))
             {
-                errorMessage += "You must enter a valid email. ";
+                errorMessage += "You must enter a valid email.\n";
             }
             if (String.IsNullOrEmpty(password))
             {
-                errorMessage += "You must enter a password.";
+                errorMessage += "You must enter a password.\n";
             }
             if (String.IsNullOrEmpty(confirmPassword))
             {
-                errorMessage += "You must confirm your password.";
+                errorMessage += "You must confirm your password.\n";
             }
             if (!String.IsNullOrEmpty(password) && !String.IsNullOrEmpty(confirmPassword) && confirmPassword != password)
             {
-                errorMessage += "Your passwords do not match.";
+                errorMessage += "Your passwords do not match.\n";
             }
 
             if (!String.IsNullOrEmpty(errorMessage))

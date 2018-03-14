@@ -40,5 +40,14 @@
             </Button.Background>
             Login
         </Button>
+        <Button Command="{Binding ShowRegisterCommand}" Grid.Row="4" Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Right" Foreground="White">
+            <Button.Background>
+                <LinearGradientBrush StartPoint="1,0" EndPoint="1,1">
+                    <GradientStop Color="Blue" Offset="0"></GradientStop>
+                    <GradientStop Color="DarkOrchid" Offset="0.8"></GradientStop>
+                </LinearGradientBrush>
+            </Button.Background>
+            Register
+        </Button>
     </Grid>
 </Page>
