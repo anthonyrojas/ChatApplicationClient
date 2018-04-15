@@ -9,6 +9,10 @@ using System.Windows.Input;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using Windows.UI.Popups;
+using GalaSoft.MvvmLight.Views;
+using Newtonsoft.Json;
+using ChatApp.Model;
+using System.Net.Http;
 
 namespace ChatApp.ViewModel
 {
@@ -22,9 +26,12 @@ namespace ChatApp.ViewModel
         private String confirmPassword;
         private String confirmPasswordMessage;
         private String confirmPasswordMessageColor;
+        private readonly INavigationService navigationService;
         public ICommand RegisterCommand { get; set; }
-        public RegisterViewModel()
+        private static ServerHttpClient client = new ServerHttpClient();
+        public RegisterViewModel(INavigationService navService)
         {
+            navigationService = navService;
             RegisterCommand = new RelayCommand(RegisterAction);
         }
 
@@ -181,7 +188,31 @@ namespace ChatApp.ViewModel
                 showDialog.Commands.Add(new UICommand("Ok") { Id = 0 });
                 showDialog.CancelCommandIndex = 0;
                 await showDialog.ShowAsync();
+                var info = new UserRegistrationInfo()
+                {
+                    phone = Phone,
+                    email = Email,
+                    firstName = FirstName,
+                    lastName = LastName,
+                    password = Password
+                };
+                string body = JsonConvert.SerializeObject(info);
+                HttpClient client = new HttpClient();
+                client.BaseAddress = new Uri("http://localhost:3000");
+                try
+                {
+                    var response = client.PostAsJsonAsync("/api/register", info);
+                    response.Wait();
+                    var result = response.Result;
+                }
+                finally
+                {
+                    Console.WriteLine("Failure to register");
+                }
+                //var response = await client.CreateUser(body);
+                //var output = await response.Content.ReadAsStringAsync();
                 ResetProps();
+                navigationService.NavigateTo("Main");
             }
         }
 
@@ -199,6 +230,14 @@ namespace ChatApp.ViewModel
             RaisePropertyChanged("LastName");
             RaisePropertyChanged("Password");
             RaisePropertyChanged("ConfirmPassword");
+        }
+        private class UserRegistrationInfo
+        {
+            public string phone;
+            public string firstName;
+            public string lastName;
+            public string email;
+            public string password;
         }
     }
 }

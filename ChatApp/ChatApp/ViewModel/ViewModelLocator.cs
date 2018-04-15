@@ -27,6 +27,7 @@ namespace ChatApp.ViewModel
     {
         public const string MainPageKey = "Main";
         public const string RegisterPageKey = "Register";
+        public const string ConversationsPageKey = "Conversations";
         /// <summary>
         /// Initializes a new instance of the ViewModelLocator class.
         /// </summary>
@@ -47,10 +48,12 @@ namespace ChatApp.ViewModel
             var nav = new NavigationService();
             nav.Configure(MainPageKey, typeof(MainPage));
             nav.Configure(RegisterPageKey, typeof(RegisterPage));
+            nav.Configure(ConversationsPageKey, typeof(ConversationsPage));
             SimpleIoc.Default.Register<INavigationService>(() => nav);
 
             SimpleIoc.Default.Register<MainViewModel>();
             SimpleIoc.Default.Register<RegisterViewModel>();
+            SimpleIoc.Default.Register<ConversationsViewModel>();
         }
 
         public MainViewModel Main
@@ -66,6 +69,14 @@ namespace ChatApp.ViewModel
             get
             {
                 return ServiceLocator.Current.GetInstance<RegisterViewModel>();
+            }
+        }
+
+        public ConversationsViewModel Conversations
+        {
+            get
+            {
+                return ServiceLocator.Current.GetInstance<ConversationsViewModel>();
             }
         }
 

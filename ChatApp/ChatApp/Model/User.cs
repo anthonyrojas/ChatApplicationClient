@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ChatApp.Model
 {
-    class User
+    public class User
     {
         public String FirstName { get; set; }
         public String LastName { get; set; }
