@@ -1,6 +1,7 @@
 import React,{Component} from 'react';
-import {View, Text, TextInput, StyleSheet, Button} from 'react-native';
+import {View, Text, TextInput, StyleSheet, Button, KeyboardAvoidingView, Image} from 'react-native';
 import {CheckBox} from 'react-native-elements';
+import LinearGradient from 'react-native-linear-gradient';
 import {connect} from 'react-redux';
 import {
     firstNameChanged,
@@ -16,7 +17,8 @@ import {
 const styles = StyleSheet.create({
     inputItem:{
         fontSize: 16,
-        margin: 10,        
+        marginHorizontal: 20,
+        marginVertical: 10,
         borderRadius: 5,
         color: 'black',
         backgroundColor: 'white',
@@ -27,7 +29,23 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'stretch',
         justifyContent: 'center',
-        flexDirection: 'column'
+        flexDirection: 'column',
+        backgroundColor: '#00FF55'
+    },
+    buttonViewStyle:{
+        margin: 15,
+        alignItems: 'center'
+    },
+    errorTextStyle:{
+        fontWeight: 'bold',
+        color: 'red',
+        alignSelf: 'center'
+    },
+    titleTextStyle:{
+        fontFamily: 'Roboto',
+        fontWeight: 'bold', 
+        color:'#000000', 
+        alignSelf: 'center'
     }
 });
 class Register extends Component{
@@ -56,42 +74,64 @@ class Register extends Component{
     render(){
         const {firstName, lastName, phone, email, password, confirmPassword, registerError, userId} = this.props;
         return(
-            <View>
+            <KeyboardAvoidingView style={styles.registerViewStyle}>
+                <Image
+                    source={require('../Assets/poop.png')} 
+                    style={{height: 80, width: 80, alignSelf: 'center'}}
+                />
+                <Text style={styles.titleTextStyle}>
+                    Thank you for your interest in joining!
+                </Text>
+                <Text style={styles.errorTextStyle}>
+                    {this.props.registerError}                 
+                </Text>
                 <TextInput 
                     placeholder="First Name"
                     underlineColorAndroid="transparent"
                     onChangeText={this.onFirstNameChanged.bind(this)}
-                    style={{backgroundColor: 'white'}}
+                    style={styles.inputItem}
                 />
                 <TextInput
-                placeholder="Last Name"
-                underlineColorAndroid="transparent"
+                    placeholder="Last Name"
+                    underlineColorAndroid="transparent"
+                    style={styles.inputItem}
+                    onChangeText={this.onLastNameChanged.bind(this)}
                 />
                 <TextInput
-                placeholder="Phone Number"
-                underlineColorAndroid="transparent"
-                keyboardType="numeric"
+                    placeholder="Phone Number"
+                    underlineColorAndroid="transparent"
+                    keyboardType="numeric"
+                    style={styles.inputItem}
+                    onChangeText={this.onPhoneChanged.bind(this)}
                 />
                 <TextInput
-                placeholder="Email"
-                underlineColorAndroid="transparent"
+                    placeholder="Email"
+                    underlineColorAndroid="transparent"
+                    style={styles.inputItem}
+                    onChangeText={this.onEmailChanged.bind(this)}
                 />
                 <TextInput
-                placeholder="Password"
-                underlineColorAndroid="transparent"
-                secureTextEntry={true}
+                    placeholder="Password"
+                    underlineColorAndroid="transparent"
+                    secureTextEntry={true}
+                    style={styles.inputItem}
+                    onChangeText={this.onPasswordChanged.bind(this)}
                 />
                 <TextInput
-                placeholder="Confirm Password"
-                underlineColorAndroid="transparent"
-                secureTextEntry={true}
+                    placeholder="Confirm Password"
+                    underlineColorAndroid="transparent"
+                    secureTextEntry={true}
+                    style={styles.inputItem}
+                    onChangeText={this.onConfirmPasswordChanged.bind(this)}
                 />
-                <Button
-                title="Register"
-                color="#3A3A3A"
-                onPress={this.onRegisterSubmit.bind(this)}
-                />
-            </View>
+                <View style={styles.buttonViewStyle}>
+                    <Button
+                        title="Register"
+                        color="#3A3A3A"
+                        onPress={this.onRegisterSubmit.bind(this)}
+                    />
+                </View>
+            </KeyboardAvoidingView>
         );
     }
 }

@@ -1,9 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
- */
-
 import React, { Component } from 'react';
 import LinearGradient from 'react-native-linear-gradient';
 import {
@@ -30,9 +24,7 @@ class App extends Component{
   render(){
     return(
       <Provider store={store}>
-        <LinearGradient colors={['#48C01C', '#1AFF00', '#00FF5E']} style={styles.container}>
-          <Register />
-        </LinearGradient>
+        <Login />
       </Provider>
     );   
   }

@@ -1,92 +1,132 @@
 import React, {Component} from 'react';
-import {Platform, Text, View, TextInput, StyleSheet, Button} from 'react-native';
+import {Text, View, TextInput, StyleSheet, Button, KeyboardAvoidingView, Image} from 'react-native';
 import {CheckBox} from 'react-native-elements'; 
-import axios from 'axios';
-import data from '../config';
-const styles=StyleSheet.create({
-  inputView: {
-    flex: 1,
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
+import {connect} from 'react-redux';
+import {host} from '../config';
+import {
+  loginFail,
+  loginPasswordChanged,
+  loginPhoneChanged,
+  loginSuccess,
+  loginUser,
+  loginShowPassword
+} from '../Actions';
+
+const styles = StyleSheet.create({
   inputItem:{
-    fontSize: 16,
+      fontSize: 16,
+      marginHorizontal: 20,
+      marginVertical: 10,
+      borderRadius: 5,
+      color: 'black',
+      backgroundColor: 'white',
+      textAlign: 'center',
+      padding: 5,
+  },
+  loginViewStyle:{
+      flex: 1,
+      alignItems: 'stretch',
+      justifyContent: 'center',
+      flexDirection: 'column',
+      backgroundColor: '#00FF55'
+  },
+  buttonViewStyle:{
+      margin: 15,
+      alignItems: 'center'
+  },
+  checkboxViewStyle:{
     margin: 10,
-    padding: 5,
-    borderColor: 'black',
-    borderWidth: 1,
-    borderRadius: 10,
-    color: 'black',
-    backgroundColor: 'white',
-    textAlign: 'center',
-    width: 250
+    alignItems: 'center'
   },
-  checkboxStyle:{
-    margin: 30,
-    justifyContent: 'center',
-    width: 150
+  errorTextStyle:{
+      fontWeight: 'bold',
+      color: 'red',
+      alignSelf: 'center'
   },
+  titleTextStyle:{
+      fontFamily: 'Roboto',
+      fontWeight: 'bold',
+      fontSize: 20,
+      color:'#000000', 
+      alignSelf: 'center'
+  }
 });
 
 class Login extends Component{
-  state = {
-    phone: '',
-    password: '',
-    revealPassword: false
+  onPhoneChanged(text){
+    this.props.loginPhoneChanged(text);
   }
-  handlePhoneInput = (event)=>{
-    this.setState({phone: event.target.value});
+  onPasswordChanged(text){
+    this.props.loginPasswordChanged(text);
   }
-  handlePasswordInput = (event)=>{
-    this.setState({password: event.target.value});
-  }
-  toggleShowPassword = ()=>{
-    this.setState({revealPassword: !this.state.revealPassword});
-  }
-  handleLoginButtonPress = (event)=>{
-  }
-  handleRegisterButtonPress= (event)=>{
 
+  onCheckboxClick(){
+    this.props.loginShowPassword(!this.props.showPassword);
+  }
+  onLoginClick(){
+    const {phone, password} = this.props;
+    this.props.loginUser({phone, password});
   }
   render(){
+    const {phone, password, loggedIn, loggingIn, loginErrorMsg, authToken} = this.props;
     return(
-      <View style={styles.inputView}>
+      <KeyboardAvoidingView style={styles.loginViewStyle}>
+        <Text style={styles.titleTextStyle}>Gato Chat</Text>
+        <Image
+          source={require('../Assets/cat.png')} 
+          style={{height: 80, width: 80, alignSelf: 'center', margin: 15}}
+        />
+        <Text style={styles.errorTextStyle}>
+          {this.props.loginErrorMsg}                 
+        </Text>
         <TextInput
-          placeholder='Enter phone number'
-          onChangeText={()=>this.handlePhoneInput}
+          placeholder="Phone"
+          underlineColorAndroid="transparent"
           style={styles.inputItem}
-          keyboardType='numeric'
-          underlineColorAndroid='transparent'
+          keyboardType="numeric"
+          onChangeText={this.onPhoneChanged.bind(this)}
         />
         <TextInput
-          placeholder='Enter password'
-          secureTextEntry={!this.state.revealPassword}
-          onChangeText={()=>this.handlePasswordInput}
+          placeholder="Password"
+          underlineColorAndroid="transparent"
           style={styles.inputItem}
-          underlineColorAndroid='transparent'
+          secureTextEntry={!this.props.showPassword}
+          onChangeText={this.onPasswordChanged.bind(this)}
         />
-        <CheckBox
-          title='Show Password'
-          checked={this.state.revealPassword}
-          onPress={this.toggleShowPassword}
-          center={true}
-          containerStyle={styles.checkboxStyle}
-        />
-        <Button
-          title='Login'
-          color='#00CDFF'
-          onPress={this.handleLoginButtonPress}
-        />
-        <View style={{marginTop: 30}}>
-          <Button
-            title='Register'
-            color='#3A3A3A'
-            onPress={this.handleRegisterButtonPress}
+        <View style={styles.checkboxViewStyle}>
+          <CheckBox
+            center
+            title="Show Password"
+            checked={this.props.showPassword}
+            onPress={this.onCheckboxClick.bind(this)}
           />
         </View>
-      </View>
+        <View style={styles.buttonViewStyle}>
+          <Button
+            title="Login"
+            color="#009AFF"
+            onPress={this.onLoginClick.bind(this)}
+          />
+        </View>
+      </KeyboardAvoidingView>
     );
-  };
+  }
+
 }
-export default Login;
+const mapStateToProps = state =>({
+  phone: state.login.phone,
+  password: state.login.password,
+  loggedIn: state.login.loggedIn,
+  loggingIn: state.login.loggingIn,
+  loginErrorMsg: state.login.loginErrorMsg,
+  authToken: state.login.authToken,
+  showPassword: state.login.showPassword
+});
+export default connect(mapStateToProps,{
+  loginFail,
+  loginPasswordChanged,
+  loginPhoneChanged,
+  loginSuccess,
+  loginUser,
+  loginShowPassword
+})(Login);

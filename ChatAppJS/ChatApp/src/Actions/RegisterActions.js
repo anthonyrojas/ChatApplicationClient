@@ -1,5 +1,5 @@
 import React from 'react';
-import {host} from '../config';
+import {host, EMPTY_STR} from '../config';
 import axios from 'axios';
 import RNFS from 'react-native-fs';
 import {
@@ -83,25 +83,29 @@ export const registerUser = ({firstName, lastName, phone, email, password, confi
             type: REGISTER_USER,
             payload: 'Registering, please wait.'
         });
-        const data = {
-            firstName: firstName,
-            lastName: lastName,
-            phone: phone,
-            email: email,
-            password: password,
-            confirmPassword: confirmPassword
-        };
-        axios.post(host + '/register', data ).then(res=>{
-            const filePath = RNFS.DocumentDirectoryPath + '/MyKey/private.pem';
-            RNFS.writeFile(path, res.data.privateKey, 'utf-8').then(success=>{
-                //success message when registered and the key has been written to device
-                registerSuccess(dispatch, res.data);
-            }).catch(fileErr=>{
-                //error when unable to successfully write the private key
-                registerFail(dispatch, 'Unable to save your private key. Please contact us for help.');
+        if(firstName === EMPTY_STR || lastName === EMPTY_STR || phone === EMPTY_STR || email === EMPTY_STR || password === EMPTY_STR || confirmPassword == EMPTY_STR){
+            registerFail(dispatch, 'You must fill out all fields!');
+        }else{
+            const data = {
+                firstName: firstName,
+                lastName: lastName,
+                phone: phone,
+                email: email,
+                password: password,
+                confirmPassword: confirmPassword
+            };
+            axios.post(host + '/api/register', data ).then(res=>{
+                const filePath = RNFS.DocumentDirectoryPath + '/MyKey/private.pem';
+                RNFS.writeFile(path, res.data.privateKey, 'utf-8').then(success=>{
+                    //success message when registered and the key has been written to device
+                    registerSuccess(dispatch, res.data);
+                }).catch(fileErr=>{
+                    //error when unable to successfully write the private key
+                    registerFail(dispatch, 'Unable to save your private key. Please contact us for help.');
+                });
+            }).catch(error=>{
+                registerFail(dispatch, 'Unable to register. Could not connect to server.');
             });
-        }).catch(error=>{
-            registerFail(dispatch, 'Unable to register. Could not connect to server.');
-        });
+        }
     }
 }
