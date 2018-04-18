@@ -24,7 +24,7 @@ class App extends Component{
   render(){
     return(
       <Provider store={store}>
-        <Login />
+        <Routes />
       </Provider>
     );   
   }

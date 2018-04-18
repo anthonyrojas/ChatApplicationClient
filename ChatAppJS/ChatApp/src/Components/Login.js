@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
-import {Text, View, TextInput, StyleSheet, Button, KeyboardAvoidingView, Image} from 'react-native';
+import {Text, View, TextInput, StyleSheet, Button, KeyboardAvoidingView, Image, ActivityIndicator, Modal, Keyboard} from 'react-native';
 import {CheckBox} from 'react-native-elements'; 
 import {connect} from 'react-redux';
-import {host} from '../config';
+import {host, EMPTY_STR} from '../config';
+import {NavigationActions} from 'react-navigation';
 import {
   loginFail,
   loginPasswordChanged,
@@ -49,6 +50,18 @@ const styles = StyleSheet.create({
       fontSize: 20,
       color:'#000000', 
       alignSelf: 'center'
+  },
+  modalContainerStyle:{
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)'
+  },
+  modalViewStyle:{
+    padding: 30,
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center',
   }
 });
 
@@ -64,18 +77,44 @@ class Login extends Component{
     this.props.loginShowPassword(!this.props.showPassword);
   }
   onLoginClick(){
+    Keyboard.dismiss();
     const {phone, password} = this.props;
     this.props.loginUser({phone, password});
+  }
+  onNavRegisterClick(){
+    Keyboard.dismiss();
+    const resetAction = NavigationActions.reset({
+      index: 0,
+      actions: [
+        NavigationActions.navigate({routeName: 'Register'})
+      ]
+    });
+    this.props.navigation.dispatch(resetAction);
   }
   render(){
     const {phone, password, loggedIn, loggingIn, loginErrorMsg, authToken} = this.props;
     return(
       <KeyboardAvoidingView style={styles.loginViewStyle}>
-        <Text style={styles.titleTextStyle}>Gato Chat</Text>
+        <Text style={styles.titleTextStyle}>Crypto Chat</Text>
         <Image
           source={require('../Assets/cat.png')} 
           style={{height: 80, width: 80, alignSelf: 'center', margin: 15}}
         />
+        <Modal
+          visible={this.props.loggingIn}
+          transparent={true}
+          onRequestClose={()=>{}}
+        >
+          <View style={styles.modalContainerStyle}>
+          <View style={styles.modalViewStyle}>
+              <Text>Signing In...</Text>
+              <ActivityIndicator
+                size='large'
+                color='#00FF00'
+              />
+          </View>
+          </View>
+        </Modal>
         <Text style={styles.errorTextStyle}>
           {this.props.loginErrorMsg}                 
         </Text>
@@ -85,13 +124,17 @@ class Login extends Component{
           style={styles.inputItem}
           keyboardType="numeric"
           onChangeText={this.onPhoneChanged.bind(this)}
+          onSubmitEditing={()=>{Keyboard.dismiss()}}
+          editable={!this.props.loggingIn}
         />
         <TextInput
           placeholder="Password"
           underlineColorAndroid="transparent"
           style={styles.inputItem}
+          editable={!this.props.loggingIn}
           secureTextEntry={!this.props.showPassword}
           onChangeText={this.onPasswordChanged.bind(this)}
+          onSubmitEditing={()=>{Keyboard.dismiss()}}
         />
         <View style={styles.checkboxViewStyle}>
           <CheckBox
@@ -106,6 +149,15 @@ class Login extends Component{
             title="Login"
             color="#009AFF"
             onPress={this.onLoginClick.bind(this)}
+            editable={this.props.loggingIn}
+          />
+        </View>
+        <View style={styles.buttonViewStyle}>
+          <Button
+            title="Register"
+            color="#FF9933"
+            onPress={this.onNavRegisterClick.bind(this)}
+            editable={this.props.loggingIn}
           />
         </View>
       </KeyboardAvoidingView>

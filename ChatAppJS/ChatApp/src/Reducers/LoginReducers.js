@@ -15,7 +15,7 @@ const initialState = {
     phone: EMPTY_STR,
     password: EMPTY_STR,
     loggedIn: false,
-    loggingIn: EMPTY_STR,
+    loggingIn: false,
     loginErrorMsg: EMPTY_STR,
     authToken: EMPTY_STR,
     showPassword: false
@@ -36,6 +36,7 @@ export default (state=initialState, action)=>{
         case LOGIN_FAIL:
             return{
                 ...state,
+                loggingIn: false,
                 loggedIn: false,
                 loginErrorMsg: action.payload
             }
@@ -48,6 +49,7 @@ export default (state=initialState, action)=>{
         case LOGIN_SUCCESS:
             return{
                 ...state,
+                loggingIn: false,
                 loginErrorMsg: EMPTY_STR,
                 authToken: action.payload.token,
                 loggedIn: true

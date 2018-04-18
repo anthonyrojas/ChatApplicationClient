@@ -52,7 +52,7 @@ export const loginUser = ({phone, password})=>{
     return(dispatch)=>{
         dispatch({
             type: LOGIN_USER,
-            payload: 'Signing in!'
+            payload: true
         });
         if(phone === EMPTY_STR || password === EMPTY_STR){
             loginFail(dispatch, 'Make sure all fields are filled out!');
