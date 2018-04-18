@@ -70,7 +70,6 @@ class Register extends Component{
     onRegisterSubmit(){
         const {firstName, lastName, phone, email, password, confirmPassword} = this.props;
         this.props.registerUser({firstName, lastName, phone, email, password, confirmPassword});
-        this.props.navigation.navigate('Login', {});
     }
     render(){
         const {firstName, lastName, phone, email, password, confirmPassword, registerError, userId} = this.props;
