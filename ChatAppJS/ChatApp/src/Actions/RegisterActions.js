@@ -1,5 +1,5 @@
 import React from 'react';
-import {host, EMPTY_STR} from '../config';
+import {host, EMPTY_STR, filePathDir} from '../config';
 import axios from 'axios';
 import RNFS from 'react-native-fs';
 import {
@@ -95,13 +95,17 @@ export const registerUser = ({firstName, lastName, phone, email, password, confi
                 confirmPassword: confirmPassword
             };
             axios.post(host + '/api/register', data ).then(res=>{
-                const filePath = RNFS.DocumentDirectoryPath + '/MyKey/private.pem';
-                RNFS.writeFile(path, res.data.privateKey, 'utf-8').then(success=>{
-                    //success message when registered and the key has been written to device
-                    registerSuccess(dispatch, res.data);
-                }).catch(fileErr=>{
-                    //error when unable to successfully write the private key
-                    registerFail(dispatch, 'Unable to save your private key. Please contact us for help.');
+                const filePath = filePathDir + '/MyKey/private.pem';
+                RNFS.mkdir(filePathDir + '/MyKey').then(mkdirSuccess=>{
+                    RNFS.writeFile(filePath, res.data.privateKey, 'utf8').then(success=>{
+                        //success message when registered and the key has been written to device
+                        registerSuccess(dispatch, res.data);
+                    }).catch(fileErr=>{
+                        //error when unable to successfully write the private key
+                        registerFail(dispatch, fileErr.message);
+                    });
+                }).catch(mkdirErr => {
+                    registerFail(dispatch, mkdirErr.message);
                 });
             }).catch(error=>{
                 registerFail(dispatch, 'Unable to register. Could not connect to server.');

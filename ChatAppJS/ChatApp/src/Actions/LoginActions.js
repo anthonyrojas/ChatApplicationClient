@@ -1,6 +1,6 @@
 import axios from 'axios';
 import {AsyncStorage} from 'react-native';
-import {host, EMPTY_STR} from '../config';
+import {host, EMPTY_STR, filePathDir} from '../config';
 import {
     LOGIN_CLICKED,
     LOGIN_FAIL,
@@ -10,6 +10,7 @@ import {
     LOGIN_USER,
     LOGIN_SHOW_PASSWORD
 } from './types';
+import RNFS from 'react-native-fs'
 
 export const loginPhoneChanged = (text)=>{
     return{
@@ -64,9 +65,21 @@ export const loginUser = ({phone, password})=>{
             axios.post(host + '/api/login', data).then(res=>{
                 try {
                     AsyncStorage.setItem('authToken', res.data.token);
-                    loginSuccess(dispatch, res.data);
+                    const filePath = filePathDir + '/MyKey/private.pem';
+                    //const filePath = RNFS.DocumentDirectoryPath + '/MyKey/private.pem';
+                    RNFS.mkdir(filePathDir + '/MyKey').then(mkdirSuccess =>{
+                        RNFS.writeFile(filePath, res.data.privateKey, 'utf8').then(success=>{
+                            loginSuccess(dispatch, res.data);
+                        }).catch(err => {
+                            loginFail(dispatch, err.message);
+                            //loginFail(dispatch, 'Could not save your private key. Please sign in again');
+                        });
+                    }).catch(mkdirErr => {
+                        loginFail(dispatch, mkdirErr.message);
+                    });
                 } catch (error) {
-                    loginFail(dispatch, 'Could not save your auth token. Please sign in again.');
+                    loginFail(dispatch, error.message);
+                    //loginFail(dispatch, 'Could not save your auth token. Please sign in again.');
                 }
             }).catch(err=>{
                 loginFail(dispatch, 'Could not connect to server to sign in. Try again later.');
