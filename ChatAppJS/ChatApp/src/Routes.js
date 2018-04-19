@@ -5,6 +5,24 @@ import Login from './Components/Login';
 import Register from './Components/Register';
 import Conversations from './Components/Conversations';
 
+export const ChatStack = StackNavigator({
+    Conversations: {
+        screen: Conversations,
+        navigationOptions: {
+            headerMode: 'float',
+            headerTitle: 'Crypto Chat',
+            headerStyle:{
+                backgroundColor: '#00FF55'
+            },
+            headerTitleStyle:{
+                color: 'black',
+                fontWeight: 'normal',
+                fontFamily: 'sans-serif'
+            }
+        }
+    }
+});
+
 export const Routes = StackNavigator({
     Login: {
         screen: Login
@@ -15,12 +33,4 @@ export const Routes = StackNavigator({
     Conversations: {
         screen: ChatStack
     }
-},{headerMode: 'none'});
-
-export const ChatStack = StackNavigator({
-    Conversations: {
-        screen: Conversations
-    }
-},{
-    title: 'Crypto Chat'
-});
+},{headerMode: 'none', title: 'Crypto Chat'});
