@@ -10,7 +10,7 @@ import {
     LOGIN_USER,
     LOGIN_SHOW_PASSWORD
 } from './types';
-import RNFS from 'react-native-fs'
+import RNFS from 'react-native-fs';
 
 export const loginPhoneChanged = (text)=>{
     return{

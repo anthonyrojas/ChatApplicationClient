@@ -91,6 +91,18 @@ class Login extends Component{
     });
     this.props.navigation.dispatch(resetAction);
   }
+  componentDidUpdate(){
+    const {loggedIn} = this.props;
+    if(loggedIn){
+      const resetAction = NavigationActions.reset({
+        index: 0,
+        actions: [
+          NavigationActions.navigate({routeName: 'Conversations'})
+        ]
+      });
+      this.props.navigation.dispatch(resetAction);
+    }
+  }
   render(){
     const {phone, password, loggedIn, loggingIn, loginErrorMsg, authToken} = this.props;
     return(

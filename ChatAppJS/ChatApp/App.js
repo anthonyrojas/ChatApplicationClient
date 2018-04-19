@@ -7,7 +7,7 @@ import {
   View
 } from 'react-native';
 import {Provider} from 'react-redux';
-import Routes from './src/Routes';
+import {Routes} from './src/Routes';
 import reducers from './src/Reducers';
 import store from './store';
 import Login from './src/Components/Login';
