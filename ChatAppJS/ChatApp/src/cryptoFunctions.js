@@ -1,5 +1,4 @@
 import RNFS from 'react-native-fs';
-import { SSL_OP_NETSCAPE_REUSE_CIPHER_CHANGE_BUG } from 'constants';
 const crypto = require('./crypto');
 exports.encryptor = (message, keyPath)=>{
     var aesIV = crypto.randomBytes(16);
