@@ -5,11 +5,11 @@ import {
     EMAIL_CHANGED,
     PHONE_CHANGED,
     PASSWORD_CHANGED,
-    CONFIRM_PASSWORD_CHANGED,
     REGISTER_USER,
     REGISTER_SUCCESS,
     REGISTER_FAIL,
-    REGISTER_CLICK
+    REGISTER_CLICK,
+    REGISTER_SHOW_PASSWORD
 } from '../Actions/types';
 import {EMPTY_STR} from '../config';
 
@@ -19,10 +19,11 @@ const initialState = {
     phone: EMPTY_STR,
     email: EMPTY_STR,
     password: EMPTY_STR,
-    confirmPassword: EMPTY_STR,
-    loadingRegister: EMPTY_STR,
+    loadingRegister: false,
     userId: EMPTY_STR,
-    registerError: EMPTY_STR
+    registerError: EMPTY_STR,
+    registerSuccessful: false,
+    showPassword: false
 }
 
 export default (state=initialState, action)=>{
@@ -30,39 +31,44 @@ export default (state=initialState, action)=>{
         case FIRST_NAME_CHANGED:
             return{
                 ...state,
-                firstName: action.payload
+                firstName: action.payload,
+                registerError: EMPTY_STR
             }
         case LAST_NAME_CHANGED:
             return{
                 ...state,
-                lastName: action.payload
+                lastName: action.payload,
+                registerError: EMPTY_STR
             }
         case EMAIL_CHANGED:
             return{
                 ...state,
-                email: action.payload
+                email: action.payload,
+                registerError: EMPTY_STR
             }
         case PHONE_CHANGED: 
             return{
                 ...state,
-                phone: action.payload
+                phone: action.payload,
+                registerError: EMPTY_STR
             }
         case PASSWORD_CHANGED:
             return{
                 ...state,
-                password: action.payload
+                password: action.payload,
+                registerError: EMPTY_STR
             }
-        case CONFIRM_PASSWORD_CHANGED:
+        case REGISTER_SHOW_PASSWORD:
             return{
                 ...state,
-                confirmPassword: action.payload
+                showPassword: action.payload
             }
         case REGISTER_FAIL:
             return{
                 ...state,
                 registerError: action.payload,
                 password: EMPTY_STR,
-                confirmPassword: EMPTY_STR
+                loadingRegister: false
             }
         case REGISTER_SUCCESS: 
             return{
@@ -72,7 +78,9 @@ export default (state=initialState, action)=>{
                 lastName: action.payload.lastName,
                 email: action.payload.email,
                 phone: action.payload.phone,
-                registerError: EMPTY_STR
+                registerError: EMPTY_STR,
+                registerSuccessful: true,
+                loadingRegister: false
             }
         case REGISTER_USER: 
             return{

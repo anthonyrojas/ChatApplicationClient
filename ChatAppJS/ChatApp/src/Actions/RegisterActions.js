@@ -1,4 +1,5 @@
 import React from 'react';
+import {Alert} from 'react-native'
 import {host, EMPTY_STR, filePathDir} from '../config';
 import axios from 'axios';
 import RNFS from 'react-native-fs';
@@ -8,11 +9,11 @@ import {
     EMAIL_CHANGED,
     PHONE_CHANGED,
     PASSWORD_CHANGED,
-    CONFIRM_PASSWORD_CHANGED,
     REGISTER_USER,
     REGISTER_SUCCESS,
     REGISTER_FAIL,
-    REGISTER_CLICK
+    REGISTER_CLICK,
+    REGISTER_SHOW_PASSWORD
 } from './types';
 
 export const firstNameChanged = (text)=>{
@@ -50,9 +51,9 @@ export const passwordChanged = (text)=>{
     }
 }
 
-export const confirmPasswordChanged = (text)=>{
+export const togglePasswordShow = (text)=>{
     return{
-        type: CONFIRM_PASSWORD_CHANGED,
+        type: REGISTER_SHOW_PASSWORD,
         payload: text
     }
 }
@@ -81,10 +82,15 @@ export const registerUser = ({firstName, lastName, phone, email, password, confi
     return(dispatch)=>{
         dispatch({
             type: REGISTER_USER,
-            payload: 'Registering, please wait.'
+            payload: true
         });
-        if(firstName === EMPTY_STR || lastName === EMPTY_STR || phone === EMPTY_STR || email === EMPTY_STR || password === EMPTY_STR || confirmPassword == EMPTY_STR){
+        if(firstName === EMPTY_STR || lastName === EMPTY_STR || phone === EMPTY_STR || email === EMPTY_STR || password === EMPTY_STR){
             registerFail(dispatch, 'You must fill out all fields!');
+            Alert.alert(
+                'Error',
+                'You must fill out all fields!'
+            )
+            
         }else{
             const data = {
                 firstName: firstName,
@@ -108,7 +114,7 @@ export const registerUser = ({firstName, lastName, phone, email, password, confi
                     registerFail(dispatch, mkdirErr.message);
                 });
             }).catch(error=>{
-                registerFail(dispatch, 'Unable to register. Could not connect to server.');
+                registerFail(dispatch, error.message);
             });
         }
     }

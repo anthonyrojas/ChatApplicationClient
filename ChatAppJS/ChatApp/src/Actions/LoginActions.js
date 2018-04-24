@@ -48,9 +48,16 @@ export const loginSuccess = (dispatch, data)=>{
         }
     });
 }
+const saveToken = async (token)=>{
+    try{
+        await AsyncStorage.setItem('@CryptoChat:authToken', token);
+    }catch(err){
+        throw err;
+    }
+}
 
 export const loginUser = ({phone, password})=>{
-    return(dispatch)=>{
+    return (dispatch)=>{
         dispatch({
             type: LOGIN_USER,
             payload: true
@@ -62,9 +69,10 @@ export const loginUser = ({phone, password})=>{
                 phone: phone,
                 password: password
             };
-            axios.post(host + '/api/login', data).then(res=>{
+            axios.post(host + '/api/login', data).then(async (res)=>{
                 try {
-                    AsyncStorage.setItem('authToken', res.data.token);
+                    //AsyncStorage.setItem('@CryptoChat:authToken', res.data.token);
+                    await saveToken(res.data.token);
                     const filePath = filePathDir + '/MyKey/private.pem';
                     //const filePath = RNFS.DocumentDirectoryPath + '/MyKey/private.pem';
                     RNFS.mkdir(filePathDir + '/MyKey').then(mkdirSuccess =>{
@@ -74,7 +82,7 @@ export const loginUser = ({phone, password})=>{
                             loginFail(dispatch, err.message);
                             //loginFail(dispatch, 'Could not save your private key. Please sign in again');
                         });
-                    }).catch(mkdirErr => {
+                    }).catch(async(mkdirErr) => {
                         loginFail(dispatch, mkdirErr.message);
                     });
                 } catch (error) {
