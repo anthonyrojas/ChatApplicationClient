@@ -56,6 +56,14 @@ const saveToken = async (token)=>{
     }
 }
 
+const savePhoneNumber = async (phone)=>{
+    try{
+        await AsyncStorage.setItem('@CryptoChat:myPhone', phone);
+    }catch(err){
+        throw err;
+    }
+}
+
 export const loginUser = ({phone, password})=>{
     return (dispatch)=>{
         dispatch({
@@ -73,6 +81,7 @@ export const loginUser = ({phone, password})=>{
                 try {
                     //AsyncStorage.setItem('@CryptoChat:authToken', res.data.token);
                     await saveToken(res.data.token);
+                    await savePhoneNumber(phone);
                     const filePath = filePathDir + '/MyKey/private.pem';
                     //const filePath = RNFS.DocumentDirectoryPath + '/MyKey/private.pem';
                     RNFS.mkdir(filePathDir + '/MyKey').then(mkdirSuccess =>{
@@ -90,7 +99,8 @@ export const loginUser = ({phone, password})=>{
                     //loginFail(dispatch, 'Could not save your auth token. Please sign in again.');
                 }
             }).catch(err=>{
-                loginFail(dispatch, 'Could not connect to server to sign in. Try again later.');
+                loginFail(dispatch, err.message);
+                //loginFail(dispatch, 'Could not connect to server to sign in. Try again later.');
             });
         }
     }

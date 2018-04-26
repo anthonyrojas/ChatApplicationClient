@@ -1,9 +1,9 @@
-import {NativeRouter, Route, Link} from 'react-router-native';
 import {Component, React} from 'react';
 import {StackNavigator} from 'react-navigation';
 import Login from './Components/Login';
 import Register from './Components/Register';
 import Conversations from './Components/Conversations';
+import CreateConversation from './Components/CreateConversation';
 
 export const ChatStack = StackNavigator({
     Conversations: {
@@ -16,7 +16,22 @@ export const ChatStack = StackNavigator({
             },
             headerTitleStyle:{
                 color: 'black',
-                fontWeight: 'normal',
+                fontWeight: 'bold',
+                fontFamily: 'sans-serif'
+            }
+        }
+    },
+    CreateConversation:{
+        screen: CreateConversation,
+        navigationOptions: {
+            headerMode: 'float',
+            headerTitle: 'Start A Conversation...',
+            headerStyle:{
+                backgroundColor: '#00FF55'
+            },
+            headerTitleStyle:{
+                color: 'black',
+                fontWeight: 'bold',
                 fontFamily: 'sans-serif'
             }
         }

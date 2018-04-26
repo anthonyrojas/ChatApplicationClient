@@ -3,7 +3,8 @@ import {
     CREATE_CONVERSATION,
     FETCH_CONVERSATIONS_LIST,
     FETCH_CONVERSATIONS_LIST_FAIL,
-    FETCH_CONVERSATIONS_LIST_SUCCESS
+    FETCH_CONVERSATIONS_LIST_SUCCESS,
+    TOGGLE_FETCHING_CONVERSATIONS
 } from './types';
 import {AsyncStorage} from 'react-native';
 import {host} from '../config';
@@ -18,8 +19,15 @@ export const fetchConversationListFail = (dispatch, text) =>{
 export const fetchConversationListSuccess = (dispatch, data)=>{
     dispatch({
         type: FETCH_CONVERSATIONS_LIST_SUCCESS,
-        payload: data.conversations
+        payload: data
     });
+}
+
+export const toggleFetchConversationsPolling = (data)=>{
+    return{
+        type: TOGGLE_FETCHING_CONVERSATIONS,
+        payload: data
+    }
 }
 
 const getToken = async()=>{
@@ -49,9 +57,25 @@ export const fetchConversationList = ()=>{
                 }
                 axios.get(host + '/api/chat/conversations', config).then(res=>{
                     if(!res.data.conversations){
-                        fetchConversationListSuccess(dispatch, res);
+                        fetchConversationListSuccess(dispatch, []);
                     }else{
-                        fetchConversationListSuccess(dispatch, res);
+                        //const convoList = res.data.conversations[0].chatType;
+                        //const convoList = res.data.conversations;
+                        AsyncStorage.getItem('@CryptoChat:myPhone').then(phoneVal=>{
+                            let convoList = []
+                            res.data.conversations.forEach((c)=>{
+                                c.title = '';
+                                c.participants.forEach(u=>{
+                                    if(u.phone != phoneVal){
+                                        c.title += `${u.firstName} ${u.lastName} `;
+                                    }
+                                });
+                                convoList.push(c);
+                            });
+                            fetchConversationListSuccess(dispatch, convoList);
+                        }).catch(err=>{
+                            fetchConversationListFail(dispatch, 'Unable to fetch conversations');
+                        })
                     }
                 }).catch(err=>{
                     fetchConversationListFail(dispatch, 'Unable to fetch conversations');
