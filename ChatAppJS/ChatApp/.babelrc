@@ -1,6 +1,5 @@
 {
   "presets": [
-    "react-native",
-    "stage-3"
+    "react-native"
   ]
 }
