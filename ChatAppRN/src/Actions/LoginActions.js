@@ -95,7 +95,7 @@ export const loginUser = ({phone, password})=>{
                         loginFail(dispatch, mkdirErr.message);
                     });
                 } catch (error) {
-                    loginFail(dispatch, error.message);
+                    loginFail(dispatch, error.error);
                     //loginFail(dispatch, 'Could not save your auth token. Please sign in again.');
                 }
             }).catch(err=>{

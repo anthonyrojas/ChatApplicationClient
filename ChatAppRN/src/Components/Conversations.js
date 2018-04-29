@@ -37,9 +37,7 @@ const getToken = async ()=> {
 
 class Conversations extends Component{
     componentWillMount(){
-        if(this.props.conversationsPolling){
-            this.props.fetchConversationList();
-        }
+        this.props.fetchConversationList();
     }
     componentDidMount(){
         // TODO: find a better way to poll the server until I am ready to use socket io

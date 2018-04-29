@@ -114,7 +114,7 @@ export const registerUser = ({firstName, lastName, phone, email, password, confi
                     registerFail(dispatch, mkdirErr.message);
                 });
             }).catch(error=>{
-                registerFail(dispatch, error.message);
+                registerFail(dispatch, error.response.message);
             });
         }
     }
