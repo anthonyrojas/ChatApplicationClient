@@ -84,6 +84,11 @@ export const loginUser = ({phone, password})=>{
                     await savePhoneNumber(phone);
                     const filePath = filePathDir + '/MyKey/private.pem';
                     //const filePath = RNFS.DocumentDirectoryPath + '/MyKey/private.pem';
+                    RNFS.unlink(filePathDir).then(success => {
+                        console.log('Successfully cleared old files');
+                    }).catch(deleteErr => {
+                        console.log(deleteErr.error);
+                    });
                     RNFS.mkdir(filePathDir + '/MyKey').then(mkdirSuccess =>{
                         RNFS.writeFile(filePath, res.data.privateKey, 'utf8').then(success=>{
                             loginSuccess(dispatch, res.data);

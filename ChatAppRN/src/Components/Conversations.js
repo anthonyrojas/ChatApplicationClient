@@ -45,6 +45,9 @@ class Conversations extends Component{
             setInterval(()=>{this.props.fetchConversationList()}, 30000);
         }
     }
+    openConversation(title){
+        this.props.navigation.navigate('Conversation', {names: title})
+    }
     showErrorText(){
         if(this.props.converationListError === EMPTY_STR){
             return(
@@ -78,6 +81,7 @@ class Conversations extends Component{
                             avatar={require('../Assets/blank-profile.png')}
                             chevronColor='white'
                             chevron
+                            onPress={() => this.openConversation(item.title)}
                         />
                     }
                 />
