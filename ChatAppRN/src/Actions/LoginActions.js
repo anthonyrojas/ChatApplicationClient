@@ -92,6 +92,11 @@ export const loginUser = ({phone, password})=>{
                     RNFS.mkdir(filePathDir + '/MyKey').then(mkdirSuccess =>{
                         RNFS.writeFile(filePath, res.data.privateKey, 'utf8').then(success=>{
                             loginSuccess(dispatch, res.data);
+                            /*RNFS.writeFile(`${filePathDir}/${res.data.userID}.pem`, res.data.publicKey, 'utf8').then(pubSuccess => {
+                                loginSuccess(dispatch, res.data);
+                            }).catch(pubErr =>{
+                                loginFail(dispatch, pubErr.message);
+                            });*/
                         }).catch(err => {
                             loginFail(dispatch, err.message);
                             //loginFail(dispatch, 'Could not save your private key. Please sign in again');
