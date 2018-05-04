@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import ActionButton from 'react-native-action-button';
-import {View, Text, StyleSheet, AsyncStorage, FlatList, ScrollView, Modal, ActivityIndicator} from 'react-native';
+import {View, Text, StyleSheet, AsyncStorage, FlatList, ScrollView, Modal, ActivityIndicator, Platform} from 'react-native';
 import RNFS from 'react-native-fs';
 import {List, ListItem, Icon, Button} from 'react-native-elements';
 import {NavigationActions, StackNavigator} from 'react-navigation'

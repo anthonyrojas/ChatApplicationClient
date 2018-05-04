@@ -1,5 +1,6 @@
 import {Component, React} from 'react';
 import {StackNavigator} from 'react-navigation';
+import {Platform} from 'react-native';
 import Login from './Components/Login';
 import Register from './Components/Register';
 import Conversations from './Components/Conversations';
@@ -18,7 +19,7 @@ export const ChatStack = StackNavigator({
             headerTitleStyle:{
                 color: 'black',
                 fontWeight: 'bold',
-                fontFamily: 'sans-serif'
+                fontFamily: Platform.OS === 'android' ? 'Roboto' : 'Helvetica'
             }
         }
     },
@@ -33,7 +34,7 @@ export const ChatStack = StackNavigator({
             headerTitleStyle:{
                 color: 'black',
                 fontWeight: 'bold',
-                fontFamily: 'sans-serif'
+                fontFamily: Platform.OS === 'android' ? 'Roboto' : 'Helvetica'
             }
         }
     },
@@ -48,7 +49,7 @@ export const ChatStack = StackNavigator({
             headerTitleStyle:{
                 color: 'black',
                 fontWeight: 'bold',
-                fontFamily: 'sans-serif'
+                fontFamily: Platform.OS === 'android' ? 'Roboto' : 'Helvetica'
             }
         })
     }

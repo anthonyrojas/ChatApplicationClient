@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
-import {Text, View, TextInput, StyleSheet, Button, KeyboardAvoidingView, Image, ActivityIndicator, Modal, Keyboard} from 'react-native';
-import {CheckBox} from 'react-native-elements'; 
+import {Text, View, TextInput, StyleSheet, KeyboardAvoidingView, Image, ActivityIndicator, Modal, Keyboard, Platform} from 'react-native';
+import {CheckBox, Button} from 'react-native-elements'; 
 import {connect} from 'react-redux';
 import {host, EMPTY_STR} from '../config';
 import {NavigationActions} from 'react-navigation';
@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
       alignSelf: 'center'
   },
   titleTextStyle:{
-      fontFamily: 'Roboto',
+      fontFamily: Platform.OS === 'android' ? 'Roboto' : 'Helvetica',
       fontWeight: 'bold',
       fontSize: 20,
       color:'#000000', 
@@ -159,7 +159,8 @@ class Login extends Component{
         <View style={styles.buttonViewStyle}>
           <Button
             title="Login"
-            color="#009AFF"
+            color="white"
+            backgroundColor="#009AFF"
             onPress={this.onLoginClick.bind(this)}
             editable={this.props.loggingIn}
           />
@@ -167,7 +168,8 @@ class Login extends Component{
         <View style={styles.buttonViewStyle}>
           <Button
             title="Register"
-            color="#FF9933"
+            color="white"
+            backgroundColor="#FF9933"
             onPress={this.onNavRegisterClick.bind(this)}
             editable={this.props.loggingIn}
           />

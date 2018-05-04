@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, Text, TextInput, StyleSheet, Image, KeyboardAvoidingView, Keyboard, Modal, ActivityIndicator, Alert} from 'react-native';
+import {View, Text, TextInput, StyleSheet, Image, KeyboardAvoidingView, Keyboard, Modal, ActivityIndicator, Alert, Platform} from 'react-native';
 import { Button } from 'react-native-elements';
 import {NavigationActions} from 'react-navigation';
 import {connect} from 'react-redux';

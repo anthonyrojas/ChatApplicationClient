@@ -1,6 +1,6 @@
 import React,{Component} from 'react';
-import {View, Text, TextInput, StyleSheet, Button, KeyboardAvoidingView, Image, Keyboard, Alert, Modal, ActivityIndicator} from 'react-native';
-import {CheckBox} from 'react-native-elements';
+import {View, Text, TextInput, StyleSheet, KeyboardAvoidingView, Image, Keyboard, Alert, Modal, ActivityIndicator, Platform} from 'react-native';
+import {CheckBox, Button} from 'react-native-elements';
 import {NavigationActions} from 'react-navigation';
 import {connect} from 'react-redux';
 import {
@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
         alignSelf: 'center'
     },
     titleTextStyle:{
-        fontFamily: 'Roboto',
+        fontFamily: Platform.OS === 'android' ? 'Roboto' : 'Helvetica',
         fontWeight: 'bold', 
         color:'#000000', 
         alignSelf: 'center'
@@ -185,7 +185,8 @@ class Register extends Component{
                 <View style={styles.buttonViewStyle}>
                     <Button
                         title="Register"
-                        color="#3A3A3A"
+                        backgroundColor="#3A3A3A"
+                        color="#FFFFFF"
                         onPress={this.onRegisterSubmit.bind(this)}
                     />
                 </View>
