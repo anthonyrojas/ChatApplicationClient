@@ -20,7 +20,7 @@ import {
 export const fetchMessagesFail = (dispatch, data)=>{
     dispatch({
         type: FETCH_MESSAGES_FAIL,
-        payload: true
+        payload: data
     });
 }
 
