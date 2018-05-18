@@ -1,7 +1,16 @@
 import RNFS from 'react-native-fs';
-export const host = 'http://10.0.2.2:3000';
-//export const host = 'http://108.240.236.101:3000';
+import {Platform} from 'react-native';
+let hostVal = '';
+//for dev purposes only
+//android localhost
+if(Platform.OS === 'android'){
+    hostVal = 'http://10.0.2.2:3000';    
+}else{
+    hostVal = 'http://localhost:3000';
+}
+export const host = hostVal;
+//export const host = 'http://10.0.2.2:3000';
+//ios localhost
 //export const host = 'http://localhost:3000';
-//export const host = 'http://192.168.1.76:3000';
 export const EMPTY_STR = '';
 export const filePathDir = RNFS.ExternalDirectoryPath;

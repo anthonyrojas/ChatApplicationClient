@@ -92,8 +92,8 @@ class Login extends Component{
     this.props.navigation.dispatch(resetAction);
   }
   componentDidUpdate(){
-    const {loggedIn} = this.props;
-    if(loggedIn){
+    const loggedIn = this.props.loggedIn;
+    if(loggedIn || this.props.authToken !== EMPTY_STR){
       const resetAction = NavigationActions.reset({
         index: 0,
         actions: [

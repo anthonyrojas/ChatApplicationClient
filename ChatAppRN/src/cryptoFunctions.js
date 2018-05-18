@@ -1,8 +1,10 @@
 import RNFS from 'react-native-fs';
-const crypto = require('./crypto');
+//const crypto = require('./crypto');
+import crypto from './crypto-in';
 
 export const encryptor = (message, keyPath)=>{
 //exports.encryptor = (message, keyPath)=>{
+    console.log('Starting the encryption');//remove
     var aesIV = crypto.randomBytes(16);
     var aesKey = crypto.randomBytes(32);
     var hmacArray = crypto.randomBytes(32);

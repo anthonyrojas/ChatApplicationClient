@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
 
 const getToken = async ()=> {
     try{
-        const token = await AsyncStorage.getItem('@ChatApp:authToken', (err, item)=>{
+        const token = await AsyncStorage.getItem('@CryptoChat:authToken', (err, item)=>{
             return item;
         });
     }catch(error){
@@ -45,8 +45,8 @@ class Conversations extends Component{
             setInterval(()=>{this.props.fetchConversationList()}, 30000);
         }
     }
-    openConversation(title){
-        this.props.navigation.navigate('Conversation', {names: title})
+    openConversation(title, id){
+        this.props.navigation.navigate('Conversation', {names: title, id: id});
     }
     showErrorText(){
         if(this.props.converationListError === EMPTY_STR){
@@ -81,7 +81,7 @@ class Conversations extends Component{
                             avatar={require('../Assets/blank-profile.png')}
                             chevronColor='white'
                             chevron
-                            onPress={() => this.openConversation(item.title)}
+                            onPress={() => this.openConversation(item.title, item._id)}
                         />
                     }
                 />

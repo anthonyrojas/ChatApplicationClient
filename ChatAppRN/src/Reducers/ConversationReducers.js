@@ -6,7 +6,8 @@ import {
     SEND_MESSAGE,
     SEND_MESSAGE_FAIL,
     SEND_MESSAGE_SUCCESS,
-    OPEN_CONVERSATION
+    OPEN_CONVERSATION,
+    MESSAGE_CONTENT_CHANGED
 } from '../Actions/types';
 import {EMPTY_STR} from '../config';
 
@@ -18,7 +19,8 @@ const initialState = {
     sendingMessageFailure: false,
     sendingMessageSuccess: false,
     sendingMessage: false,
-    loadingConversation: false
+    loadingConversation: false,
+    messageContent: EMPTY_STR
 }
 
 export default (state = initialState, action)=>{
@@ -43,7 +45,7 @@ export default (state = initialState, action)=>{
                 messageListSuccess: true,
                 messageList: action.payload,
                 messageListError: false,
-                fetchingMessages: false 
+                fetchingMessages: false
             }
         case SEND_MESSAGE:
             return{
@@ -64,12 +66,19 @@ export default (state = initialState, action)=>{
                 ...state,
                 sendingMessageSuccess: action.payload,
                 sendingMessage: false,
-                sendingMessageFailure: false
+                sendingMessageFailure: false,
+                messageContent: EMPTY_STR
             }
         case OPEN_CONVERSATION:
             return{
                 ...state,
-                loadingConversation: true
+                loadingConversation: true,
+                messageContent: EMPTY_STR
+            }
+        case MESSAGE_CONTENT_CHANGED:
+            return{
+                ...state,
+                messageContent: action.payload
             }
         default: return state;
     }

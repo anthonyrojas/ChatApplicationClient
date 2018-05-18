@@ -11,11 +11,20 @@ import {
     SEND_MESSAGE,
     SEND_MESSAGE_FAIL,
     SEND_MESSAGE_SUCCESS,
+    MESSAGE_CONTENT_CHANGED
 } from './types';
 import {
-    encryptor,
+    //encryptor,
     decryptor
 } from '../cryptoFunctions';
+const encryptor = require('../cryptoFunctions').encryptor;
+
+export const messageContentChanged = (text)=>{
+    return{
+        type: MESSAGE_CONTENT_CHANGED,
+        payload: text
+    }
+}
 
 export const fetchMessagesFail = (dispatch, data)=>{
     dispatch({
@@ -37,31 +46,45 @@ export const fetchMessages = ({conversationID}) =>{
             type: FETCH_MESSAGES,
             payload: true
         });
-        AsyncStorage.getItem('@CryptoChat:authToken').then(tokenData => {
-            //successfully fetched token from AsyncStorage
-            const config = {
-                headers: {
-                    authorization: tokenData
-                }
-            };
-            axios.get(host + `/api/chat/${conversationID}/messages`, config).then(msgRes => {
-                if(msgRes){
-                    const keyPath = `${filePathDir}/MyKey/private.pem`;
-                    let messages = msgRes.data.messages;
-                    messages.foreach(msg => {
-                        msg.content = JSON.parse(msg.content);
-                        msg.content = decryptor(msg.content, keyPath);
-                    });
-                    //messages done decrypting
-                    fetchMessagesSuccess(dispatch, messages);
-                }else{
-                    //no messages
-                }
-            }).catch(msgErr => {
-
+        AsyncStorage.getItem('@CryptoChat:myID')
+        .then(myId => {
+            AsyncStorage.getItem('@CryptoChat:authToken').then(tokenData => {
+                //successfully fetched token from AsyncStorage
+                const config = {
+                    headers: {
+                        authorization: tokenData
+                    }
+                };
+                axios.get(host + `/api/chat/${conversationID}/messages`, config).then(msgRes => {
+                    if(msgRes){
+                        //the message was sent by someone else
+                        const keyPath = `${filePathDir}/MyKey/private.pem`;
+                        let messages = msgRes.data.messages;
+                        messages.foreach(msg => {
+                            if(msg.sender._id === myId){
+                                msg.senderContent = JSON.parse(msg.senderContent);
+                                msg.senderContent = decryptor(msg.senderContent, keyPath);
+                            }else{
+                                msg.content = JSON.parse(msg.content);
+                                msg.content = decryptor(msg.content, keyPath);
+                            }
+                        });
+                        //messages done decrypting
+                        fetchMessagesSuccess(dispatch, messages);
+                    }else{
+                        //no messages
+                        fetchMessagesSuccess(dispatch, []);
+                    }
+                }).catch(msgErr => {
+                    fetchMessagesFail(dispatch, true);
+                });
+            }).catch(tokenErr => {
+                //handle error: unable to fetch token from AsyncStorage
+                fetchMessagesFail(dispatch, true);
             });
-        }).catch(tokenErr => {
-            //handle error: unable to fetch token from AsyncStorage
+        }).catch(idErr => {
+            //unable to fetch my user id from database
+            fetchMessagesFail(dispatch, true);
         });
     }
 };
@@ -80,28 +103,38 @@ export const openConversation = ({conversationID})=>{
             };
             //get the keys for this conversation
             axios.get(host + '/api/chat/keys/' + conversationID, config).then(keysRes => {
-                let userArr = keysRes.data.users;
-                //check if keys exist in the local file system
-                usersArr.forEach(user => {
-                    let keyFileName = filePathDir + '/' + user._id + '.pem';
-                    RNFS.exists(keyFileName).then(exists => {
-                        if(exists){
-                            //the key already exists in the local file system, do nothing
-                        }else{
-                            //the key does not exist and needs to be written in
-                            RNFS.writeFile(keyFileName, user.publicKey, 'utf8').then(successWrite => {
-                                //key written successfully
-                            }).catch(writeErr => {
-                                //error saving key
-                            });
-                        }
+                if(keysRes){
+                    let userArr = keysRes.data.users;
+                    //check if keys exist in the local file system
+                    userArr.forEach(user => {
+                        let keyFileName = filePathDir + '/' + user._id.toString() + '.pem';
+                        RNFS.exists(keyFileName).then(exists => {
+                            if(exists){
+                                //the key already exists in the local file system, do nothing
+                            }else{
+                                //the key does not exist and needs to be written in
+                                RNFS.writeFile(keyFileName, user.publicKey, 'utf8').then(successWrite => {
+                                    //console.log('Public key saved successfully');
+                                    //key written successfully
+                                }).catch(writeErr => {
+                                    //error saving keys
+                                    fetchMessagesFail(dispatch, true);
+                                });
+                            }
+                        }).catch(existsErr =>{
+                            console.log('Could not check if a file exists');
+                        });
                     });
-                });
+                }else{
+                    console.log('There are no keys');
+                }
             }).catch(keyErr => {
                 //error obtaining key from server
+                console.log('Could not obtain public keys');
             })
         }).catch(tokenErr => {
             //error readint the auth token from Async Storage (the DB)
+            fetchMessagesFail(dispatch, true);
         });
     }
 }
@@ -117,7 +150,7 @@ export const sendMessageSuccess = (dispatch, data)=>{
     dispatch({
         type: SEND_MESSAGE_SUCCESS,
         payload: data
-    })
+    });
 }
 
 //send single one-to-one message, group message will have different action
@@ -134,22 +167,29 @@ export const sendMessage = ({conversationID, content})=>{
                 }
             };
             axios.get(`${host}/api/chat/keys/${conversationID}`, config).then(users =>{
-                const receiver = users[0]._id;
+                const receiver = users.data.users[0]._id;
+                console.log(`${filePathDir}/${receiver}.pem`);//remove
                 var encryptedMsgJSON = encryptor(content, `${filePathDir}/${receiver}.pem`);
+                console.log('I am encrypting the message with other user key');//remove
                 var encryptedMsg = JSON.stringify(encryptedMsgJSON);
-                axios.post(`${host}/api/chat/${conversationID}/message`, {content: encryptedMsg}, config)
+                var myMsgJson = encryptor(content, `${filePathDir}/MyKey/public.pem`);
+                console.log('I am encrypting the message with my public key');//remove
+                var myMsg = JSON.stringify(myMsgJson);
+                axios.post(`${host}/api/chat/${conversationID}/message`, {content: encryptedMsg, senderContent: myMsg}, config)
                 .then(msgSent =>{
-                    sendMessageSuccess()
+                    sendMessageSuccess(dispatch, true);
                     //refresh the messages
                 }).catch(msgErr =>{
                     //unable to send the message
+                    sendMessageFail(dispatch, true);
                 });
             }).catch(userErr=>{
                 //unable to get the keys and ids from the server
+                console.log(userErr.toString());//remove
+                sendMessageFail(dispatch, true);
             });
-            //encrypt with the public key of the other users
-            encryptor(content, )
         }).catch(tokenErr => {
+            sendMessageFail(dispatch, true);
         });
     }
 }

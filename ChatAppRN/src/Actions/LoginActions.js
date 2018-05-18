@@ -64,6 +64,14 @@ const savePhoneNumber = async (phone)=>{
     }
 }
 
+const saveUserID = async (id)=>{
+    try{
+        await AsyncStorage.setItem('@CryptoChat:myID', id);
+    }catch(err){
+        throw err;
+    }
+}
+
 export const loginUser = ({phone, password})=>{
     return (dispatch)=>{
         dispatch({
@@ -81,6 +89,7 @@ export const loginUser = ({phone, password})=>{
                 try {
                     //AsyncStorage.setItem('@CryptoChat:authToken', res.data.token);
                     await saveToken(res.data.token);
+                    await saveUserID(res.data.userID);
                     await savePhoneNumber(phone);
                     const filePath = filePathDir + '/MyKey/private.pem';
                     //const filePath = RNFS.DocumentDirectoryPath + '/MyKey/private.pem';
@@ -91,12 +100,12 @@ export const loginUser = ({phone, password})=>{
                     });
                     RNFS.mkdir(filePathDir + '/MyKey').then(mkdirSuccess =>{
                         RNFS.writeFile(filePath, res.data.privateKey, 'utf8').then(success=>{
-                            loginSuccess(dispatch, res.data);
-                            /*RNFS.writeFile(`${filePathDir}/${res.data.userID}.pem`, res.data.publicKey, 'utf8').then(pubSuccess => {
+                            //loginSuccess(dispatch, res.data);
+                            RNFS.writeFile(`${filePathDir}/MyKey/public.pem`, res.data.publicKey, 'utf8').then(pubSuccess => {
                                 loginSuccess(dispatch, res.data);
                             }).catch(pubErr =>{
                                 loginFail(dispatch, pubErr.message);
-                            });*/
+                            });
                         }).catch(err => {
                             loginFail(dispatch, err.message);
                             //loginFail(dispatch, 'Could not save your private key. Please sign in again');
