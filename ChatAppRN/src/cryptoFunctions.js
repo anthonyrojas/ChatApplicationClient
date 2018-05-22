@@ -1,32 +1,41 @@
 import RNFS from 'react-native-fs';
-//const crypto = require('./crypto');
-import crypto from './crypto-in';
-
-export const encryptor = (message, keyPath)=>{
-//exports.encryptor = (message, keyPath)=>{
-    console.log('Starting the encryption');//remove
-    var aesIV = crypto.randomBytes(16);
-    var aesKey = crypto.randomBytes(32);
-    var hmacArray = crypto.randomBytes(32);
-    RNFS.readFile(keyPath, 'utf8').then(publicKey => {
+import '../shim';
+import crypto from 'crypto';
+import {randomBytes} from 'react-native-randombytes';
+import { EMPTY_STR } from './config';
+import RSAKey from 'react-native-rsa';
+//export const encryptor = (message, keyPath)=>{
+exports.encryptor = (message, keyPath)=>{
+    var aesIV = randomBytes(16);
+    var aesKey = randomBytes(32);
+    var hmacArray = randomBytes(32);
+    const returnVal = {
+        plainText: message,
+        enc: message
+    };
+    const str = RNFS.readFile(keyPath, 'utf8').then(publicKey => {
         var aes = crypto.createCipheriv('aes-256-cbc', aesKey, aesIV);
         var cipherText = aes.update(new Buffer(message), 'utf8', 'hex') + aes.final('hex');
         var hmac = crypto.createHmac('sha256', hmacArray);
         hmac.update(cipherText);
         var concatKeys = Buffer.concat([aesIV, aesKey, hmacArray]);
-        var rsaCipherText = crypto.publicEncrypt(publicKey, concatKeys, crypto.constants.RSA_PKCS1_OAEP_PADDING);
-        return{
+        var rsaCipherText = crypto.publicEncrypt(publicKey, concatKeys).toString('hex');
+        //var rsaCipherText = crypto.publicEncrypt(publicKey, concatKeys, CRYPTO.constants.RSA_PKCS1_OAEP_PADDING).toString('hex');
+        const returnObj = {
             rsa: rsaCipherText,
             aes: cipherText,
             hmac: hmac.digest('hex')
         };
+        returnVal.enc = JSON.stringify(returnObj);
     }).catch(fileErr =>{
+        console.log(fileErr.toString());
         console.log('Could not encrypt message');
-        return message;
+        returnVal.enc = message;
     });
+    return returnVal.enc;
 }
-export const decryptor = (jsonObj, key) =>{
-//exports.decryptor = (jsonObj, key)=>{
+//export const decryptor = (jsonObj, key) =>{
+exports.decryptor = (jsonObj, key)=>{
     var rsaCipherText = jsonObj['rsa'];
     var aesCipherText = jsonObj['aes'];
     var hmacTag = jsonObj['hmac'];

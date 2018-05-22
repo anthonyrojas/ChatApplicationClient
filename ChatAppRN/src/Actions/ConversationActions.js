@@ -13,12 +13,7 @@ import {
     SEND_MESSAGE_SUCCESS,
     MESSAGE_CONTENT_CHANGED
 } from './types';
-import {
-    //encryptor,
-    decryptor
-} from '../cryptoFunctions';
-const encryptor = require('../cryptoFunctions').encryptor;
-
+import {encryptor, decryptor} from '../CryptoFunctions';
 export const messageContentChanged = (text)=>{
     return{
         type: MESSAGE_CONTENT_CHANGED,
@@ -168,14 +163,15 @@ export const sendMessage = ({conversationID, content})=>{
             };
             axios.get(`${host}/api/chat/keys/${conversationID}`, config).then(users =>{
                 const receiver = users.data.users[0]._id;
-                console.log(`${filePathDir}/${receiver}.pem`);//remove
-                var encryptedMsgJSON = encryptor(content, `${filePathDir}/${receiver}.pem`);
-                console.log('I am encrypting the message with other user key');//remove
-                var encryptedMsg = JSON.stringify(encryptedMsgJSON);
-                var myMsgJson = encryptor(content, `${filePathDir}/MyKey/public.pem`);
-                console.log('I am encrypting the message with my public key');//remove
-                var myMsg = JSON.stringify(myMsgJson);
-                axios.post(`${host}/api/chat/${conversationID}/message`, {content: encryptedMsg, senderContent: myMsg}, config)
+                var encryptedMsg = encryptor(content, `${filePathDir}/${receiver}.pem`);
+                var myMsg = encryptor(content, `${filePathDir}/MyKey/public.pem`);
+                console.log(`Encrypted message with other user key: ${encryptedMsg}`);//remove
+                console.log(`Encrypted message with my key: ${myMsg}`);
+                var data = {
+                    content: encryptedMsg,
+                    senderContent: myMsg
+                }
+                axios.post(`${host}/api/chat/${conversationID}/message`, data, config)
                 .then(msgSent =>{
                     sendMessageSuccess(dispatch, true);
                     //refresh the messages

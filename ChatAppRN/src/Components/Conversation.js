@@ -4,7 +4,7 @@ import {View, Text, FlatList, StyleSheet, Platform, TextInput, Keyboard} from 'r
 import {EMPTY_STR} from '../config';
 import {List, ListItem, Button} from 'react-native-elements';
 import {connect} from 'react-redux';
-import {encryptor, decryptor} from '../cryptoFunctions';
+import {encryptor, decryptor} from '../CryptoFunctions';
 import {
     OPEN_CONVERSATION,
     FETCH_MESSAGES,
@@ -49,14 +49,12 @@ class Conversation extends Component{
     }
     onMessageContentChanged(text){
         this.props.messageContentChanged(text);
-        console.log(text);
     }
     componentDidMount(){
         this.props.fetchMessages({conversationID: this.props.navigation.state.params.id});
     }
     onSendMessage(){
         Keyboard.dismiss();
-        console.log(`\n this is the message content when sending it: ${this.props.messageContent}\n`);
         if(this.props.messageContent === EMPTY_STR){
             //the message the user is trying to send is empty
         }else{
