@@ -13,7 +13,7 @@ exports.encryptor = (message, keyPath)=>{
         plainText: message,
         enc: message
     };
-    const str = RNFS.readFile(keyPath, 'utf8').then(publicKey => {
+    RNFS.readFile(keyPath, 'utf8').then(publicKey => {
         var aes = crypto.createCipheriv('aes-256-cbc', aesKey, aesIV);
         var cipherText = aes.update(new Buffer(message), 'utf8', 'hex') + aes.final('hex');
         var hmac = crypto.createHmac('sha256', hmacArray);

@@ -165,12 +165,11 @@ export const sendMessage = ({conversationID, content})=>{
                 const receiver = users.data.users[0]._id;
                 var encryptedMsg = encryptor(content, `${filePathDir}/${receiver}.pem`);
                 var myMsg = encryptor(content, `${filePathDir}/MyKey/public.pem`);
-                console.log(`Encrypted message with other user key: ${encryptedMsg}`);//remove
-                console.log(`Encrypted message with my key: ${myMsg}`);
                 var data = {
                     content: encryptedMsg,
                     senderContent: myMsg
                 }
+                console.log(`Encrypted message: ${encryptedMsg}`);
                 axios.post(`${host}/api/chat/${conversationID}/message`, data, config)
                 .then(msgSent =>{
                     sendMessageSuccess(dispatch, true);

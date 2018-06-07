@@ -59,8 +59,6 @@ export const fetchConversationList = ()=>{
                     if(!res.data.conversations){
                         fetchConversationListSuccess(dispatch, []);
                     }else{
-                        //const convoList = res.data.conversations[0].chatType;
-                        //const convoList = res.data.conversations;
                         AsyncStorage.getItem('@CryptoChat:myPhone').then(phoneVal=>{
                             let convoList = []
                             res.data.conversations.forEach((c)=>{
