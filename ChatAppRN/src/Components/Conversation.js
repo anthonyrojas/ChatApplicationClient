@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import RNFS from 'react-native-fs';
 import {View, Text, FlatList, StyleSheet, Platform, TextInput, Keyboard} from 'react-native';
 import {EMPTY_STR} from '../config';
 import {List, ListItem, Button} from 'react-native-elements';
@@ -24,6 +23,7 @@ import {
     sendMessageSuccess,
     messageContentChanged
 } from '../Actions/index';
+import Message from './Message';
 
 const styles = StyleSheet.create({
     containerViewStyle:{
@@ -67,9 +67,17 @@ class Conversation extends Component{
             <View style={styles.containerViewStyle}>
                 <FlatList
                 data={this.props.messageList}
-                key="messages"
-                >
-                </FlatList>
+                key='messages'
+                keyExtractor={(msg, i)=>msg.id}
+                renderItem={({msg})=>
+                    <Message
+                        key={msg.id}
+                        title={msg.name}
+                        rightTitle={msg.created}
+                        caption={msg.content}
+                    />
+                }
+                />
                 <TextInput 
                 underlineColorAndroid='transparent'
                 style={styles.inputMessageStyle}

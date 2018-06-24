@@ -28,7 +28,6 @@ exports.encryptor = (message, keyPath)=>{
         };
         returnVal.enc = JSON.stringify(returnObj);
     }).catch(fileErr =>{
-        console.log(fileErr.toString());
         console.log('Could not encrypt message');
         returnVal.enc = message;
     });
